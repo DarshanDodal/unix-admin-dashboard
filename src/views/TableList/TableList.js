@@ -19,10 +19,13 @@ import Typography from "@material-ui/core/Typography";
 import { red } from "@material-ui/core/colors";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ShareIcon from "@material-ui/icons/Share";
+import AddLibraryIcon from "@material-ui/icons/LibraryAdd";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Fab from "@material-ui/core/Fab";
 import { useDispatch, useSelector } from "react-redux";
+
+import { infoColor, hexToRgb } from "assets/jss/material-dashboard-react.js";
 
 const styles = {
 	cardCategoryWhite: {
@@ -59,6 +62,26 @@ const styles = {
 		maxWidth: 345,
 		marginBottom: 20,
 	},
+	rootBlank: {
+		maxWidth: 345,
+		height: 428,
+		marginBottom: 20,
+		backgroundColor: "rgba(0,0,0,0.04)",
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		flexDirection: "column",
+		borderRadius: 5,
+	},
+	rootBlankCard: {
+		backgroundColor: "rgba(0,0,0,0.04)",
+		padding: 45,
+		display: "flex",
+		alignItems: "center",
+		justifyContent: "center",
+		flexDirection: "column",
+		borderRadius: 30,
+	},
 	media: {
 		height: 0,
 		paddingTop: "56.25%", // 16:9
@@ -81,8 +104,11 @@ const styles = {
 		width: "100%",
 	},
 	addIcon: {
-		fontSize: 100,
-		width: "100%",
+		fontSize: 65,
+		color: "rgba(1,1,1,0.7)",
+	},
+	addLabel: {
+		color: "rgba(1,1,1,0.7)",
 	},
 };
 
@@ -178,7 +204,7 @@ export default function TableList() {
 		<>
 			<GridContainer spacing={3}>
 				{filteredCourses.map((course) => (
-					<GridItem xs={12} sm={12} md={3}>
+					<GridItem xs={12} sm={12} md={4} lg={3}>
 						<Card className={classes.root}>
 							<CardHeader
 								action={
@@ -227,6 +253,19 @@ export default function TableList() {
 						</Card>
 					</GridItem>
 				))}
+				<GridItem xs={12} sm={12} md={4} lg={3}>
+					<div
+						onClick={() => {
+							console.log("Clicked");
+						}}
+						className={classes.rootBlank}
+					>
+						<div className={classes.rootBlankCard}>
+							<AddLibraryIcon className={classes.addIcon} />
+							<Typography className={classes.addLabel}>New Course</Typography>
+						</div>
+					</div>
+				</GridItem>
 				{/* <GridItem xs={12} sm={12} md={4}>
 					<Card className={classes.rootAdd}>
 						<Fab color="secondary" aria-label="add" className={classes.margin}>

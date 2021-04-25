@@ -30,6 +30,8 @@ import UserProfile from "views/UserProfile/UserProfile.js";
 import TableList from "views/TableList/TableList.js";
 import Typography from "views/Typography/Typography.js";
 import Inquiry from "views/Inquiry/Inquiry.js";
+import Feedback from "views/Feedback/Feedback.js";
+import AboutUs from "views/AboutUs/AboutUs.js";
 import Icons from "views/Icons/Icons.js";
 import Maps from "views/Maps/Maps.js";
 import NotificationsPage from "views/Notifications/Notifications.js";
@@ -37,6 +39,9 @@ import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
 // core components/views for RTL layout
 import RTLPage from "views/RTLPage/RTLPage.js";
 import StarIcon from "@material-ui/icons/Star";
+import FeedbackIcon from "@material-ui/icons/Feedback";
+import RecentActorsIcon from "@material-ui/icons/RecentActors";
+import BusinessIcon from "@material-ui/icons/Business";
 
 const dashboardRoutes = [
 	{
@@ -48,8 +53,8 @@ const dashboardRoutes = [
 		layout: "/admin",
 	},
 	{
-		path: "/user",
-		name: "Users",
+		path: "/students",
+		name: "Students",
 		rtlName: "ملف تعريفي للمستخدم",
 		icon: Person,
 		component: UserProfile,
@@ -69,6 +74,25 @@ const dashboardRoutes = [
 		rtlName: "طباعة",
 		icon: LibraryBooks,
 		component: Inquiry,
+		// component: Typography,
+		layout: "/admin",
+	},
+	{
+		path: "/feedback",
+		name: "Feedback",
+		rtlName: "طباعة",
+		icon: FeedbackIcon,
+		component: Feedback,
+		// component: Typography,
+		layout: "/admin",
+	},
+
+	{
+		path: "/about-us",
+		name: "About Us",
+		rtlName: "طباعة",
+		icon: BusinessIcon,
+		component: AboutUs,
 		// component: Typography,
 		layout: "/admin",
 	},
