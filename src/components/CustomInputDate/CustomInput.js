@@ -24,6 +24,7 @@ export default function CustomInputDate(props) {
 		inputProps,
 		error,
 		success,
+		multiline,
 	} = props;
 
 	const labelClasses = classNames({
@@ -59,6 +60,7 @@ export default function CustomInputDate(props) {
 					underline: underlineClasses,
 				}}
 				id={id}
+				multiline={multiline || false}
 				{...inputProps}
 			/>
 			{error ? (

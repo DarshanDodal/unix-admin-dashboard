@@ -32,6 +32,11 @@ import Typography from "views/Typography/Typography.js";
 import Inquiry from "views/Inquiry/Inquiry.js";
 import Feedback from "views/Feedback/Feedback.js";
 import AboutUs from "views/AboutUs/AboutUs.js";
+
+// import Login from "views/Auth/LoginView.js";
+// import Register from "views/Auth/RegisterView.js";
+// import AccountConfirmation from "views/Auth/AccountConfirmationView.js";
+
 import Icons from "views/Icons/Icons.js";
 import Maps from "views/Maps/Maps.js";
 import NotificationsPage from "views/Notifications/Notifications.js";
@@ -145,5 +150,32 @@ const dashboardRoutes = [
 	//   layout: "/admin"
 	// }
 ];
+
+// const userRoutes = [
+// 	{
+// 		path: "/user",
+// 		name: "Dashboard",
+// 		rtlName: "لوحة القيادة",
+// 		icon: Dashboard,
+// 		component: Login,
+// 		layout: "/login",
+// 	},
+// 	{
+// 		path: "/user",
+// 		name: "Dashboard",
+// 		rtlName: "لوحة القيادة",
+// 		icon: Dashboard,
+// 		component: Register,
+// 		layout: "/register",
+// 	},
+// 	{
+// 		path: "/user",
+// 		name: "Dashboard",
+// 		rtlName: "لوحة القيادة",
+// 		icon: Dashboard,
+// 		component: AccountConfirmation,
+// 		layout: "/confirm-account",
+// 	},
+// ];
 
 export default dashboardRoutes;

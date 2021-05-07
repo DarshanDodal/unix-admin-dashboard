@@ -2,17 +2,20 @@ import React from "react";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 // core components
+import { Input, Box } from "@material-ui/core";
 import GridItem from "components/Grid/GridItem.js";
 import Button from "@material-ui/core/Button";
 import GridContainer from "components/Grid/GridContainer.js";
 import Table from "components/Table/Table.js";
 import AddIcon from "@material-ui/icons/Add";
 import Card from "@material-ui/core/Card";
+import CardBody from "components/Card/CardBody.js";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardMedia from "@material-ui/core/CardMedia";
 import CardContent from "@material-ui/core/CardContent";
 import CardActions from "@material-ui/core/CardActions";
 import Collapse from "@material-ui/core/Collapse";
+import TextField from "@material-ui/core/TextField";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
@@ -23,6 +26,15 @@ import AddLibraryIcon from "@material-ui/icons/LibraryAdd";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Fab from "@material-ui/core/Fab";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import FormControl from "@material-ui/core/FormControl";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import InputLabel from "@material-ui/core/InputLabel";
+import CustomInput from "components/CustomInput/CustomInput.js";
 import { useDispatch, useSelector } from "react-redux";
 
 import { infoColor, hexToRgb } from "assets/jss/material-dashboard-react.js";
@@ -110,6 +122,18 @@ const styles = {
 	addLabel: {
 		color: "rgba(1,1,1,0.7)",
 	},
+	form: {
+		display: "flex",
+		flexDirection: "column",
+		margin: "auto",
+		width: "fit-content",
+	},
+	formControl: {
+		minWidth: 12,
+	},
+	formControlLabel: {
+		// marginTop: theme.spacing(1),
+	},
 };
 
 const useStyles = makeStyles(styles);
@@ -181,10 +205,19 @@ const courses = [
 
 export default function TableList() {
 	const classes = useStyles();
+	const [open, setOpen] = React.useState(false);
 	const [expanded, setExpanded] = React.useState(false);
 
 	const handleExpandClick = () => {
 		setExpanded(!expanded);
+	};
+
+	const handleClickOpen = () => {
+		setOpen(true);
+	};
+
+	const handleClose = () => {
+		setOpen(false);
 	};
 
 	const { search } = useSelector((state) => {
@@ -254,12 +287,7 @@ export default function TableList() {
 					</GridItem>
 				))}
 				<GridItem xs={12} sm={12} md={4} lg={3}>
-					<div
-						onClick={() => {
-							console.log("Clicked");
-						}}
-						className={classes.rootBlank}
-					>
+					<div onClick={handleClickOpen} className={classes.rootBlank}>
 						<div className={classes.rootBlankCard}>
 							<AddLibraryIcon className={classes.addIcon} />
 							<Typography className={classes.addLabel}>New Course</Typography>
@@ -274,6 +302,87 @@ export default function TableList() {
 					</Card>
 				</GridItem> */}
 			</GridContainer>
+			<Dialog
+				fullWidth={true}
+				maxWidth={"sm"}
+				open={open}
+				onClose={handleClose}
+				aria-labelledby="max-width-dialog-title"
+			>
+				<DialogTitle id="form-dialog-title">New Course</DialogTitle>
+				<DialogContent>
+					{/* <Grid item md={6} xs={12}> */}
+					<InputLabel>Course Cover Image</InputLabel>
+					<br />
+					<Box classes={{ root: classes.uploadDiv }}>
+						<Button color="white" variant="contained" component="label">
+							<Input
+								type="file"
+								name="file"
+								hidden
+								color="white"
+								// onChange={handleFileChoose}
+								// filename={temp}
+							/>
+						</Button>
+					</Box>
+
+					{/* <InputLabel fullwidth color="primary" shrink>
+						<a href={file}>{file}</a>
+					</InputLabel> */}
+					<TextField
+						autoFocus
+						margin="dense"
+						id="name"
+						label="Course Name"
+						type="text"
+						name="courseName"
+						fullWidth
+						// value={name}
+						// onChange={handleNameChange}
+					/>
+					<TextField
+						autoFocus
+						margin="dense"
+						id="price"
+						label="Price"
+						type="number"
+						name="price"
+						fullWidth
+						// value={price}
+						// onChange={handlePriceChange}
+					/>
+					<TextField
+						autoFocus
+						margin="dense"
+						id="category"
+						label="Description"
+						type="text"
+						name="description"
+						multiline={true}
+						fullWidth
+						// value={category}
+						// onChange={handleCategoryChange}
+					/>
+				</DialogContent>
+				<DialogActions>
+					{/* <Button
+						startIcon={<DeleteIcon />}
+						color="secondary"
+						style={{ left: 15, position: "absolute" }}
+						// onClick={handleDishDelete}
+					>
+						Delete
+					</Button> */}
+					{/* {Loading ? (
+						<CircularProgress size={24} className={classes.buttonProgress} />
+					) : null} */}
+					<Button onClick={handleClose} color="primary">
+						Cancel
+					</Button>
+					<Button color="primary">Done</Button>
+				</DialogActions>
+			</Dialog>
 		</>
 		// <GridContainer>
 		//   <GridItem xs={12} sm={12} md={12}>
