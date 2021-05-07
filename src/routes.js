@@ -28,6 +28,7 @@ import Language from "@material-ui/icons/Language";
 import DashboardPage from "views/Dashboard/Dashboard.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
 import TableList from "views/TableList/TableList.js";
+import Teachers from "views/Teacher/Teacher.js";
 import Typography from "views/Typography/Typography.js";
 import Inquiry from "views/Inquiry/Inquiry.js";
 import Feedback from "views/Feedback/Feedback.js";
@@ -47,6 +48,7 @@ import StarIcon from "@material-ui/icons/Star";
 import FeedbackIcon from "@material-ui/icons/Feedback";
 import RecentActorsIcon from "@material-ui/icons/RecentActors";
 import BusinessIcon from "@material-ui/icons/Business";
+import SupervisorAccountIcon from "@material-ui/icons/SupervisorAccount";
 
 const dashboardRoutes = [
 	{
@@ -63,6 +65,14 @@ const dashboardRoutes = [
 		rtlName: "ملف تعريفي للمستخدم",
 		icon: Person,
 		component: UserProfile,
+		layout: "/admin",
+	},
+	{
+		path: "/teachers",
+		name: "Teachers",
+		rtlName: "طباعة",
+		icon: SupervisorAccountIcon,
+		component: Teachers,
 		layout: "/admin",
 	},
 	{
@@ -101,14 +111,6 @@ const dashboardRoutes = [
 		// component: Typography,
 		layout: "/admin",
 	},
-	// {
-	// 	path: "/feedback",
-	// 	name: "Feedback",
-	// 	rtlName: "طباعة",
-	// 	icon: StarIcon,
-	// 	// component: Typography,
-	// 	layout: "/admin",
-	// },
 	// {
 	// 	path: "/icons",
 	// 	name: "Icons",

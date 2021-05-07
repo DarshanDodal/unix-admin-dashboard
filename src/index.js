@@ -22,12 +22,14 @@ import { Router, Route, Switch, Redirect } from "react-router-dom";
 import { reducer } from "./reducer/reducer.js";
 import { Provider } from "react-redux";
 import { createStore } from "redux";
-
+import Amplify from "aws-amplify";
+import awsExports from "./aws-exports";
 // core components
 import Admin from "layouts/Admin.js";
 import RTL from "layouts/RTL.js";
 
 import "assets/css/material-dashboard-react.css?v=1.9.0";
+Amplify.configure(awsExports);
 
 const hist = createBrowserHistory();
 
