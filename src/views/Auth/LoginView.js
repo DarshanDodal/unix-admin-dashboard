@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { Link as RouterLink, useHistory } from "react-router-dom";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import {
@@ -13,24 +13,64 @@ import {
 	makeStyles,
 	Snackbar,
 } from "@material-ui/core";
-import Page from "src/components/Page";
-import {
-	CognitoUser,
-	AuthenticationDetails,
-	CookieStorage,
-} from "amazon-cognito-identity-js";
-import UserPool from "./cognitoClient";
+import Page from "../../components/Page";
+import { Auth } from "aws-amplify";
+// import {
+// 	CognitoUser,
+// 	AuthenticationDetails,
+// 	CookieStorage,
+// } from "amazon-cognito-identity-js";
+// import UserPool from "./cognitoClient";
+import MyTheme from "../../themes/theme";
 import MuiAlert from "@material-ui/lab/Alert";
+import Paper from "@material-ui/core/Paper";
+
 function Alert(props) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 const useStyles = makeStyles((theme) => ({
 	root: {
-		backgroundColor: theme.palette.background.dark,
+		backgroundColor: "cyan",
+		// backgroundColor: theme.palette.background.dark,
+		display: "flex",
 		height: "100%",
-		paddingBottom: theme.spacing(3),
-		paddingTop: theme.spacing(3),
+		width: "100%",
+		alignItems: "center",
+		justifyContent: "center",
+	},
+	paperContainer: {
+		backgroundImage:
+			"url('https://www.artheducation.com/admin/blog-images/best-computer-institute-in-okhla.jpg')",
+
+		backgroundSize: "cover",
+		backgroundRepeat: "no-repeat",
+	},
+	box: {
+		backgroundColor: "rgba(0,0,0,0.8)",
+		padding: 300,
+	},
+	Button: {
+		backgroundColor: theme.palette.secondary.main,
+		color: "rgba(255,255,255,0.8)",
+		"&:hover": {
+			backgroundColor: "rgba(156, 53, 179, 0.5)",
+			boxShadow: "none",
+		},
+	},
+	navLinks: {
+		color: MyTheme.palette.primary.main,
+	},
+	label: {
+		color: theme.palette.secondary.main,
+		fontSize: 18,
+	},
+	input: {
+		border: `1px solid ${theme.palette.secondary.main} `,
+		"&:hover": {
+			borderColor: "rgba(156, 53, 179, 0.5)",
+			boxShadow: "none",
+		},
 	},
 }));
 
@@ -41,7 +81,7 @@ const LoginView = () => {
 	const [message, setMessage] = React.useState("");
 	const [submitted, setSubmitted] = React.useState(false);
 
-	const navigate = useNavigate();
+	const history = useHistory();
 
 	const handleSnackBarClose = (event, reason) => {
 		if (reason === "clickaway") {
@@ -52,19 +92,19 @@ const LoginView = () => {
 	};
 
 	const success = () => {
-		navigate("/app/dashboard", { replace: true });
+		// navigate("/app/dashboard", { replace: true });
 	};
 	// useEffect(() => {
 	//   console.log(UserPool.getCurrentUser());
 	// });
-
 	return (
-		<Page className={classes.root} title="Login">
+		<Paper className={classes.paperContainer} title="Login">
 			<Box
 				display="flex"
 				flexDirection="column"
 				height="100%"
 				justifyContent="center"
+				className={classes.box}
 			>
 				<Container maxWidth="sm">
 					<Formik
@@ -80,33 +120,17 @@ const LoginView = () => {
 							password: Yup.string().max(255).required("Password is required"),
 						})}
 						onSubmit={(values, action) => {
-							const user = new CognitoUser({
-								Username: values.email,
-								Pool: UserPool,
-							});
-							const authDetails = new AuthenticationDetails({
-								Username: values.email,
-								Password: values.password,
-							});
-
-							user.authenticateUser(authDetails, {
-								onSuccess: (data) => {
-									success();
-									console.log("onSuccess:", data);
-								},
-
-								onFailure: (err) => {
+							Auth.signIn(values.email, values.password)
+								.then((user) => {
+									console.log(user);
+									history.push("/admin/dashboard");
+								})
+								.catch((err) => {
+									console.log(err);
 									setSeverity("error");
 									setMessage(err.message);
 									setOpen(true);
-									// console.error('onFailure:', err);
-								},
-
-								newPasswordRequired: (data) => {
-									console.log("newPasswordRequired:", data);
-								},
-							});
-							action.setSubmitting(false);
+								});
 						}}
 					>
 						{({
@@ -120,51 +144,11 @@ const LoginView = () => {
 						}) => (
 							<form onSubmit={handleSubmit}>
 								<Box mb={3}>
-									<Typography color="textPrimary" variant="h2">
+									<Typography color="default" variant="h2">
 										Sign in
 									</Typography>
-									{/* <Typography
-                    color="textSecondary"
-                    gutterBottom
-                    variant="body2"
-                  >
-                    Sign in on the internal platform
-                  </Typography> */}
 								</Box>
-								{/* <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
-                    <Button
-                      color="primary"
-                      fullWidth
-                      startIcon={<FacebookIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Facebook
-                    </Button>
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <Button
-                      fullWidth
-                      startIcon={<GoogleIcon />}
-                      onClick={handleSubmit}
-                      size="large"
-                      variant="contained"
-                    >
-                      Login with Google
-                    </Button>
-                  </Grid>
-                </Grid>
-                <Box mt={3} mb={1}>
-                  <Typography
-                    align="center"
-                    color="textSecondary"
-                    variant="body1"
-                  >
-                    or login with email address
-                  </Typography>
-                </Box> */}
+
 								<TextField
 									error={Boolean(touched.email && errors.email)}
 									fullWidth
@@ -177,6 +161,15 @@ const LoginView = () => {
 									type="email"
 									value={values.email}
 									variant="outlined"
+									InputLabelProps={{
+										className: classes.label,
+									}}
+									InputProps={{
+										className: classes.input,
+									}}
+									inputProps={{
+										className: classes.Input,
+									}}
 								/>
 								<TextField
 									error={Boolean(touched.password && errors.password)}
@@ -190,10 +183,16 @@ const LoginView = () => {
 									type="password"
 									value={values.password}
 									variant="outlined"
+									InputLabelProps={{
+										className: classes.label,
+									}}
+									InputProps={{
+										className: classes.input,
+									}}
 								/>
 								<Box my={2}>
 									<Button
-										color="primary"
+										className={classes.Button}
 										disabled={isSubmitting || submitted}
 										fullWidth
 										size="large"
@@ -203,13 +202,17 @@ const LoginView = () => {
 										Sign in now
 									</Button>
 								</Box>
-
-								<Typography color="textSecondary" variant="body1">
+								{/* <Typography color="textSecondary" variant="body1">
 									Don&apos;t have an account?{" "}
-									<Link component={RouterLink} to="/register" variant="h6">
+									<Link
+										className={classes.navLinks}
+										component={RouterLink}
+										to="/register"
+										variant="h6"
+									>
 										Sign up
 									</Link>
-								</Typography>
+								</Typography> */}
 							</form>
 						)}
 					</Formik>
@@ -224,7 +227,7 @@ const LoginView = () => {
 					</Alert>
 				</Snackbar>
 			</Box>
-		</Page>
+		</Paper>
 	);
 };
 
