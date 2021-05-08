@@ -25,6 +25,8 @@ import MyTheme from "../../themes/theme";
 import MuiAlert from "@material-ui/lab/Alert";
 import Paper from "@material-ui/core/Paper";
 
+import { useDispatch, useSelector } from "react-redux";
+
 function Alert(props) {
 	return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
@@ -76,6 +78,7 @@ const useStyles = makeStyles((theme) => ({
 
 const LoginView = () => {
 	const classes = useStyles();
+	const dispatch = useDispatch();
 	const [open, setOpen] = React.useState(false);
 	const [severity, setSeverity] = React.useState("");
 	const [message, setMessage] = React.useState("");
@@ -123,6 +126,7 @@ const LoginView = () => {
 							Auth.signIn(values.email, values.password)
 								.then((user) => {
 									console.log(user);
+									dispatch({ type: "AUTH_REFRESH" });
 									history.push("/admin/dashboard");
 								})
 								.catch((err) => {

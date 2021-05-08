@@ -19,6 +19,8 @@ import Search from "@material-ui/icons/Search";
 import CustomInput from "components/CustomInput/CustomInput.js";
 import Button from "components/CustomButtons/Button.js";
 import { useDispatch, useSelector } from "react-redux";
+import Amplify, { Auth } from "aws-amplify";
+import { useHistory } from "react-router-dom";
 
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 
@@ -26,6 +28,7 @@ const useStyles = makeStyles(styles);
 
 export default function AdminNavbarLinks() {
 	const classes = useStyles();
+	const history = useHistory();
 	const dispatch = useDispatch();
 	const [openNotification, setOpenNotification] = React.useState(null);
 	const [openProfile, setOpenProfile] = React.useState(null);
@@ -53,6 +56,16 @@ export default function AdminNavbarLinks() {
 	const handleSearch = (event) => {
 		// console.log("Event", event);
 		dispatch({ type: "SET_SEARCH", payload: event });
+	};
+
+	const handleLogout = () => {
+		Auth.signOut()
+			.then(() => {
+				history.push("/login");
+			})
+			.catch((error) => {
+				console.log("error signing out: ", error);
+			});
 	};
 
 	return (
@@ -219,7 +232,7 @@ export default function AdminNavbarLinks() {
 										</MenuItem>
 										<Divider light />
 										<MenuItem
-											onClick={handleCloseProfile}
+											onClick={handleLogout}
 											className={classes.dropdownItem}
 										>
 											Logout

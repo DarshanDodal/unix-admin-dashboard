@@ -30,7 +30,11 @@ import theme from "./themes/theme";
 import Admin from "layouts/Admin.js";
 import RTL from "layouts/RTL.js";
 import Login from "views/Auth/LoginView.js";
-import { withAuthenticator } from "@aws-amplify/ui-react";
+import {
+	withAuthenticator,
+	AmplifyAuthenticator,
+	AmplifySignUp,
+} from "@aws-amplify/ui-react";
 import {
 	Authenticator,
 	SignIn,
@@ -38,6 +42,7 @@ import {
 	ConfirmSignUp,
 	Greetings,
 } from "aws-amplify-react";
+import { useDispatch, useSelector } from "react-redux";
 
 import "assets/css/material-dashboard-react.css?v=1.9.0";
 Amplify.configure(awsExports);
@@ -45,81 +50,71 @@ Amplify.configure(awsExports);
 const hist = createBrowserHistory();
 
 const store = createStore(reducer);
-// const signedIn = false;
 
-const PrivateRoute = ({ component: Component, ...rest }) => {
-	const [isLoaded, setIsLoaded] = useState(false);
-	const [isAuthenticated, setIsAuthenticated] = useState(false);
+function PrivateRoute({ children, ...rest }) {
+	const [auth, setAuth] = useState(false);
+
 	const history = useHistory();
+	const isAuthenticated = () => {
+		setAuth(false);
+
+		Auth.currentSession()
+			.then((response) => {
+				if (response.isValid()) {
+					setAuth(true);
+				} else {
+					redirectToLogin();
+				}
+			})
+			.catch(() => {
+				redirectToLogin();
+			});
+	};
+
+	const redirectToLogin = () => {
+		history.push("/login");
+	};
 
 	useEffect(() => {
-		Auth.currentAuthenticatedUser()
-			.then((us) => {
-				console.log("US", us);
-				setIsLoaded(true);
-				setIsAuthenticated(true);
-			})
-			.catch(() => history.push("/login"));
+		isAuthenticated();
+	}, []);
 
-		const unlisten = history.listen(() => {
-			Auth.currentAuthenticatedUser()
-				.then((user) => console.log("user: ", user))
-				.catch((e) => {
-					console.log("E", e);
-					if (isAuthenticated) setIsAuthenticated(false);
-				});
-		});
-
-		return unlisten();
-	}, [history, isAuthenticated]);
-
-	if (!isLoaded) return null;
-	return (
-		<Route
-			{...rest}
-			render={(props) => {
-				return isAuthenticated ? (
-					<Component {...props} />
-				) : (
-					<Redirect
-						to={{
-							pathname: "/login",
-						}}
-					/>
-				);
-			}}
-		/>
-	);
-};
+	return <Route {...rest}>{auth ? children : null}</Route>;
+}
 
 const App = () => {
-	// const [signedIn, setSigned] = React.useState(false);
-	// React.useEffect((event) => {
-	// 	Auth.currentAuthenticatedUser()
-	// 		.then(() => {
-	// 			setSigned(true);
-	// 		})
-	// 		.catch(() => {
-	// 			setSigned(false);
-	// 		});
-	// 	event.preventDefault();
-	// }, []);
-	const history1 = useHistory();
+	const [signedIn, setSigned] = React.useState(false);
+	const dispatch = useDispatch();
+	const { authRefresh } = useSelector((state) => {
+		return state;
+	});
+
+	React.useEffect(() => {
+		Auth.currentAuthenticatedUser()
+			.then(() => {
+				setSigned(true);
+			})
+			.catch(() => {
+				setSigned(false);
+			});
+	}, [signedIn]);
 
 	return (
 		<Router history={hist}>
 			<Switch>
-				<PrivateRoute path="/admin/dashboard" component={Admin} />
-				<Route
-					path="/login"
-					render={() => (
-						<ThemeProvider theme={theme}>
-							<Login />
-						</ThemeProvider>
-					)}
-				/>
-				<Redirect from="/" to="/admin/dashboard" />
-				{/* <Route path="/rtl" component={RTL} /> */}
+				{/* <Route path="/admin">
+					{signedIn ? <Admin /> : <Redirect to="/login" />}
+				</Route> */}
+				<PrivateRoute path="/admin">
+					<Admin />
+				</PrivateRoute>
+				<Route path="/login">
+					<ThemeProvider theme={theme}>
+						<Login />
+					</ThemeProvider>
+				</Route>
+
+				<Redirect exact from="/" to="/admin/dashboard" />
 			</Switch>
 		</Router>
 	);
